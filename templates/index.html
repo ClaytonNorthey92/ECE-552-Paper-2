@@ -1,0 +1,77 @@
+<!DOCTYPE html>
+<html>
+    <body>
+        <div>
+            <label>Speed (0-100)</label>
+            <input id='speed_input' type="number" name="speed" max="100" min="0"/>
+            <label>Pressure (0-100)</label>
+            <input id='pressure_input' type="number" name="pressure" max="9" min="0"/>
+        </div>
+        <div> 
+            <button id="eval_button">Evaluate</button>
+        </div>
+        <div id="result">
+        </div>
+        <div id="it">
+        </div>
+        <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.12.4/jquery.min.js"></script> 
+        <script>
+            
+            function is_speed_high(speed){
+               var membership = new triangle(50, 80, 100); 
+               return membership(speed);
+            }
+
+            function is_speed_low(speed){
+                var membership = new triangle(0, 40, 80);
+                return membership(speed);
+            }
+
+            function is_pressure_high(pressure){
+                var membership = new triangle(45, 78, 100);
+                return membership(pressure);
+            }
+
+            function is_pressure_low(pressure){
+                var membership = new triangle(0, 40, 78);
+                return membership(pressure);
+            }
+
+            function triangle(left, climax, right){
+                return function(input){
+                    var output;
+                    if (input < left || input > right)
+                        output = 0;
+                    else if (input >= left && input <= climax)
+                        output = (input - left)/(climax - left);
+                    else
+                        output = (right - input)/(right - climax);
+                    return output;
+                }
+            }
+
+        var speed_input = $('#speed_input');
+        var pressure_input = $('#pressure_input');
+
+        $('#eval_button').on('click', function(){
+            var value = speed_input.val();
+            var pressure = pressure_input.val();
+            var high = is_speed_high(value);
+            var low = is_speed_low(value);
+            var p_high = is_pressure_high(pressure);
+            var p_low = is_pressure_low(pressure);
+                
+            var determined_speed = Math.max(high, low);
+            var determined_pressure = Math.max(p_high, p_low);
+            var determined_it = Math.min(determined_speed, determined_pressure);
+
+            $('#result').text('High Speed: '+high+', Low Speed: '+low+', High Pressure:'+p_high+' Low Pressure:'+p_low+'');
+            
+            $('#it').text('IT: evaluate for ' + determined_it);
+                        
+        });
+
+
+        </script>
+    </body>
+</html>
